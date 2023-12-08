@@ -36,3 +36,38 @@ Install Fonts
 ```
 npm install @fontsource/inter
 ```
+
+Install Font Awesome Icons
+https://origin.fontawesome.com/v5/docs/web/use-with/react
+```
+npm i --save @fortawesome/fontawesome-svg-core
+npm install --save @fortawesome/free-solid-svg-icons
+npm install --save @fortawesome/react-fontawesome
+```
+
+## Development Notes
+### UI
+#### Sticky Header
+We are using React Bootstrap for styling. To implement sticky header, we set `fixed="top"` to the Navbar component. 
+
+After that, we need to offset the Navbar height. In the Container that contains our Outlet, we set the following CSS properties:
+```CSS
+.main:before {
+  height: 3rem;
+  content: "";
+  display:block;
+}
+```
+
+#### Client Side Routing
+React Bootstrap Navbar uses `<a>` links for traditional server side routing. We want to use React Router Client Side Routing instead. 
+
+#### Pagination
+
+
+### API
+#### Product API
+We will be using the fake store API to obtain sample product data for our store. 
+
+https://fakestoreapi.com/docs
+
