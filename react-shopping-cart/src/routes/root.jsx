@@ -6,6 +6,7 @@ import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import {LinkContainer} from 'react-router-bootstrap'
 
 // export async function loader({ request }) {
 //   const url = new URL(request.url);
@@ -39,19 +40,25 @@ export default function Root() {
       <>
         <Navbar bg="light" expand="lg" fixed="top">
         <Container>
-            <Navbar.Brand href="/">Shopping Cart</Navbar.Brand>
+            <LinkContainer to="/React_Shopping_Cart/">
+                <Navbar.Brand>Shopping Cart</Navbar.Brand>
+            </LinkContainer>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-                <Nav.Link href="#home">Home</Nav.Link>
+                <LinkContainer to="/React_Shopping_Cart/">
+                <Nav.Link>Home</Nav.Link>
+                </LinkContainer>
                 <Nav.Link href="#features">Features</Nav.Link>
                 <Nav.Link href="#pricing">Pricing</Nav.Link>
             </Nav>
             <Nav className="ms-auto">
                 <Nav.Item>
-                <Nav.Link href="/">
+                <LinkContainer to="/React_Shopping_Cart/">
+                <Nav.Link>
                     <FontAwesomeIcon icon={faCartShopping} />   
                 </Nav.Link>
+                </LinkContainer>
                 </Nav.Item>
             </Nav>
             </Navbar.Collapse>

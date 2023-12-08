@@ -62,6 +62,25 @@ After that, we need to offset the Navbar height. In the Container that contains 
 #### Client Side Routing
 React Bootstrap Navbar uses `<a>` links for traditional server side routing. We want to use React Router Client Side Routing instead. 
 
+We install the `react-router-bootstrap` library
+
+```
+npm i react-router-bootstrap
+```
+
+All we need to do is to is wrap our React Bootstrap element in a `<LinkContainer>`. 
+
+We define our path in the LinkContainer and remove the original href.
+
+```JSX
+import {LinkContainer} from 'react-router-bootstrap'
+
+<LinkContainer to="/service">
+    <Nav.Link>Service</Nav.Link>
+</LinkContainer>
+```
+
+
 #### Pagination
 
 
