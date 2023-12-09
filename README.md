@@ -82,6 +82,59 @@ import {LinkContainer} from 'react-router-bootstrap'
 
 
 #### Pagination
+To implement pagination, we need to first define the maximum number of items that can be loaded in a page.
+`productlist.jsx`
+```JSX
+  const itemsPerPage = 12;
+  let totalPages = Math.ceil(products.length / itemsPerPage);
+```
+
+We use states to keep track of
+- Active Page
+- Items to be displayed on the page
+```JSX
+let [activePage, setActivePage ] = useState(1);
+
+  // Run during first load
+    let indexOfLastItem = activePage * itemsPerPage;
+    let indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    let [currentItems, setCurrentItems ] = useState(products.slice(indexOfFirstItem, indexOfLastItem))
+```
+
+We add the number of pages we have to the Pagination.Item Component
+```JSX
+    let PageItems = []
+    for (let number = 1; number <= totalPages; number++) {
+      PageItems.push(
+        <Pagination.Item key={number} active={number === activePage} onClick={() => handlePageChange(number)}>
+          {number}
+        </Pagination.Item>,
+      );
+    }
+```
+
+In our display, we iterate through the filtered Items to be displayed state, instead of the entire product list. 
+
+We display the Pagination component at the bottom of the page. 
+```JSX
+<Container style={{ display: "flex", justifyContent: "center" }} className="my-4">
+      <Pagination>{PageItems}</Pagination>
+</Container>
+```
+
+- When a page item is clicked, we use a handler function to update the states. 
+- Note that we should use the `pageNumber` argument for calculations and not the `activePage` state, since state updates are async and take time to update. This means that we will still refer to the previous `activePage` state, our list of items remains unchanged and the page won't update. 
+```JSX
+  const handlePageChange = (pageNumber) => {
+    setActivePage(pageNumber);
+    let indexOfLastItem = pageNumber * itemsPerPage;
+    let indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    setCurrentItems(products.slice(indexOfFirstItem, indexOfLastItem))
+  };
+```
+
+
+#### Product Search
 
 
 ### API
