@@ -6,13 +6,12 @@ export async function getProducts(query) {
   const response = await fetch('https://fakestoreapi.com/products')
   const status = response.status;
   const data = await response.json();
+  if (query) {
+    data = matchSorter(data, query, { keys: ["title"] });
+  }
   console.log(data)
   return data;
 
-//   if (query) {
-//     contacts = matchSorter(contacts, query, { keys: ["first", "last"] });
-//   }
-//   return contacts.sort(sortBy("last", "createdAt"));
 }
 
 export async function getProduct(id) {

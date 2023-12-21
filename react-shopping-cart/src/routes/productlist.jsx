@@ -1,5 +1,5 @@
 // ProductListPage.js
-import { Outlet, NavLink, Link, useLoaderData, Form, redirect, useNavigation, useSubmit} from "react-router-dom";
+import { Outlet, NavLink, Link, useLoaderData, Form, redirect, useNavigation, useSubmit, useOutletContext} from "react-router-dom";
 import React, {useState, useEffect, useReducer} from 'react';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card'
@@ -7,46 +7,67 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Pagination from 'react-bootstrap/Pagination'
 import { getProducts, } from "../product";
+import { matchSorter } from "match-sorter";
 
 export async function loader({ request }) {
   const url = new URL(request.url);
-  // const q = url.searchParams.get("q") || "";
-  const products = await getProducts();
-  return { products };
+  const q = url.searchParams.get("q") || "";
+  const products = await getProducts(q);
+  return { products, q };
 }
 
 const ProductListPage = () => {
   const [, forceUpdate] = useReducer(x => x + 1, 0);
 
-  const { products } = useLoaderData();
+  const { products, q } = useLoaderData();
+  const [productData, setProductData] = useState(products)
+  const [currentItems, setCurrentItems ] = useState(productData)
 
   const itemsPerPage = 12;
   let totalPages = Math.ceil(products.length / itemsPerPage);
-
   let [activePage, setActivePage ] = useState(1);
+  let PageItems = []
+  for (let number = 1; number <= totalPages; number++) {
+    PageItems.push(
+      <Pagination.Item key={number} active={number === activePage} onClick={() => handlePageChange(number)}>
+        {number}
+      </Pagination.Item>,
+    );
+  }
 
-  // Run during first load
+  // Run during load
+  useEffect(() => {
+    // Display first page items only
     let indexOfLastItem = activePage * itemsPerPage;
     let indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    let [currentItems, setCurrentItems ] = useState(products.slice(indexOfFirstItem, indexOfLastItem))
+    setCurrentItems(productData.slice(indexOfFirstItem, indexOfLastItem))
 
-    let PageItems = []
-    for (let number = 1; number <= totalPages; number++) {
-      PageItems.push(
-        <Pagination.Item key={number} active={number === activePage} onClick={() => handlePageChange(number)}>
-          {number}
-        </Pagination.Item>,
-      );
-    }
+  }, [])
 
+  const [query] = useOutletContext();
+  console.log('This is the query')
+  console.log(query)
+
+  useEffect(() => {
+    let data = matchSorter(productData, query, { keys: ["title"] });
+    console.log('matchsorter')
+    console.log(data)
+    setCurrentItems(data)
+    forceUpdate()
+  }, [query])
+
+  const navigation = useNavigation();
+  const submit = useSubmit();
+
+  
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber);
     // Use pageNumber argument, not the activePage state
     let indexOfLastItem = pageNumber * itemsPerPage;
     let indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    setCurrentItems(products.slice(indexOfFirstItem, indexOfLastItem))
-    // forceUpdate()
+    setCurrentItems(productData.slice(indexOfFirstItem, indexOfLastItem))
+    forceUpdate()
   };
 
   return (

@@ -135,6 +135,30 @@ We display the Pagination component at the bottom of the page.
 
 
 #### Product Search
+We want to implement a searchbar that searches as we type. 
+
+In `root.jsx` we introduce a new state to keep track of our search queries
+```JSX
+const [query, setQuery] = useState("");
+```
+
+In the Navbar we set the searchbar as a React-Bootstrap Form, and attach an event handler to it. The event handler is triggered whenever something is typed and updated the query state. 
+
+The `query` state is passed to child components as a prop using the `Context Outlet`
+
+In the `productlist.jsx` child component, we retrieve the `query` state using `useOutletContext()`
+
+Lastly, we use a `useEffect()` hook. By setting the `query` state as a dependency, this function will run whenever there is a state change. The function uses the `matchSorter` library to perform fuzzy matching and filter for items, then updates the `currentItem` state with the filtered items, thereby forcing a re-render. 
+
+```JSX
+useEffect(() => {
+    let data = matchSorter(productData, query, { keys: ["title"] });
+    console.log('matchsorter')
+    console.log(data)
+    setCurrentItems(data)
+    forceUpdate()
+  }, [query])
+```
 
 
 ### API
