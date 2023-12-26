@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Pagination from 'react-bootstrap/Pagination'
 import { getProducts, } from "../product";
+import StarRating from '../StarRating';
 import { matchSorter } from "match-sorter";
 
 export async function loader({ request }) {
@@ -75,16 +76,19 @@ const ProductListPage = () => {
     <Container>
     <Row xs={1} md={2} lg={3} xl={4} className="g-4">
       {currentItems.map((product) => (
+        <Link to={`/React_Shopping_Cart/products/${product.id}`}>
         <Col key={product.id} style={{height: '26rem'}}>
           <Card className="h-100">
             <Card.Img variant="top" src={product.image} alt={product.title} className='h-50'/>
             <Card.Body >
               <Card.Title className="overflow-hidden" style={{height: '6rem'}}>{product.title}</Card.Title>
               <Card.Text className="h-auto">Price: ${product.price}</Card.Text>
-              <Card.Text className="h-auto">Rating: {product.rating.rate}</Card.Text>
+              {/* <Card.Text className="h-auto">Rating: {product.rating.rate}</Card.Text> */}
+              <StarRating rating={product.rating.rate} />
             </Card.Body>
           </Card>
         </Col>
+        </Link>
       ))}
     </Row>
     </Container>

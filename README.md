@@ -45,6 +45,13 @@ npm install --save @fortawesome/free-solid-svg-icons
 npm install --save @fortawesome/react-fontawesome
 ```
 
+Install React Icons
+
+https://react-icons.github.io/react-icons/
+```
+npm install react-icons --save
+```
+
 ## Development Notes
 ### UI
 #### Sticky Header
@@ -160,6 +167,15 @@ useEffect(() => {
   }, [query])
 ```
 
+#### Star Rating
+To display our numerical ratings as stars, we will create our own star rating component in `StarRating.jsx`
+
+In the Star Rating Component:
+- We use the `react-icons` library to get our star icons. 
+- The component takes in a numerical rating as a parameter. 
+- We calculate how many filled stars and unfilled stars need to be displayed (total 5 stars)
+
+We then import the component in `productlist.jsx` and `singleproductpage.jsx`
 
 ### API
 #### Product API

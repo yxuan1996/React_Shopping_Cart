@@ -7,6 +7,7 @@ import {
 import App from './App.jsx'
 import Root from "./routes/root";
 import ProductListPage, { loader as productLoader} from "./routes/productlist.jsx"
+import SingleProductPage, { loader as singleProductLoader } from "./routes/singleproductpage.jsx"
 import ErrorPage from "./error-page";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css'
@@ -28,12 +29,12 @@ const router = createBrowserRouter([
             element: <ProductListPage />,
             loader : productLoader,
           },
-    //       {
-    //         path: "contacts/:contactId",
-    //         element: <Contact />,
-    //         loader: contactLoader,
-    //         action: contactAction,
-    //       },
+          {
+            path: "products/:productId",
+            element: <SingleProductPage />,
+            loader: singleProductLoader,
+            // action: contactAction,
+          },
 
         ],
       },
