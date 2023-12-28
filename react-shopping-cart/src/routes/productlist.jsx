@@ -11,16 +11,16 @@ import StarRating from '../StarRating';
 import { matchSorter } from "match-sorter";
 
 export async function loader({ request }) {
-  const url = new URL(request.url);
-  const q = url.searchParams.get("q") || "";
-  const products = await getProducts(q);
-  return { products, q };
+  // const url = new URL(request.url);
+  // const q = url.searchParams.get("q") || "";
+  const products = await getProducts("");
+  return { products };
 }
 
 const ProductListPage = () => {
   const [, forceUpdate] = useReducer(x => x + 1, 0);
 
-  const { products, q } = useLoaderData();
+  const { products } = useLoaderData();
   const [productData, setProductData] = useState(products)
   const [currentItems, setCurrentItems ] = useState(productData)
 
@@ -45,7 +45,10 @@ const ProductListPage = () => {
 
   }, [])
 
-  const [query] = useOutletContext();
+  const {
+    querytext: [query],
+    cart: [cartItems, setCartItems],
+  } = useOutletContext();
   console.log('This is the query')
   console.log(query)
 

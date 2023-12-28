@@ -2,6 +2,7 @@
   "name": "react-shopping-cart",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://yxuan1996.github.io/React_Shopping_Cart/",
   "type": "module",
   "scripts": {
     "dev": "vite",

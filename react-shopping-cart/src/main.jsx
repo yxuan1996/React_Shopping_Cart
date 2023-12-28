@@ -8,6 +8,7 @@ import App from './App.jsx'
 import Root from "./routes/root";
 import ProductListPage, { loader as productLoader} from "./routes/productlist.jsx"
 import SingleProductPage, { loader as singleProductLoader } from "./routes/singleproductpage.jsx"
+import ShoppingCartPage from "./routes/shoppingcart.jsx"
 import ErrorPage from "./error-page";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css'
@@ -35,7 +36,13 @@ const router = createBrowserRouter([
             loader: singleProductLoader,
             // action: contactAction,
           },
-
+          {
+            path: "cart",
+            element: <ShoppingCartPage />,
+            loader : productLoader,
+            // action: contactAction,
+          },
+          
         ],
       },
 

@@ -177,6 +177,33 @@ In the Star Rating Component:
 
 We then import the component in `productlist.jsx` and `singleproductpage.jsx`
 
+#### Shopping Cart
+We want to implement a Shopping Cart that allows users to add items into the cart. 
+
+In `root.jsx` we introduce a new state to keep track of our cart items
+```JSX
+const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('Cart')) || []);
+```
+
+We use `Outlet context` to pass the state as a prop to child components. 
+
+In `singleproductpage.jsx`,  we create a button that allows us to add the current product to cart. 
+
+When the Add To Cart button is clicked
+- We check if the product already exists in the cart or not
+- If the product already exists in the cart, increment the quantity
+- If the product does not exist, add it with a quantity of 1
+- Save the cart state to localstorage
+- Show the 'added to cart' alert
+
+In `shoppingcart.jsx` we create our shopping cart page that displays a summary of all the items in our shopping cart. 
+
+We define the following functions
+- `getProductInfo` - Since cartItems only has the product id, we need to use to function to look up other product attributes, such as price, product image etc. 
+- `calculateTotalPrice` - Calculate Total Price for a single item. 
+- `calculateGrandTotal` - Calculate the Grand Total. Add $20 delivery fee. 
+- `handleRemoveFromCart` - Remove the selected item from the cart, and update the cartItem state. Save the cart state to localstorage. 
+
 ### API
 #### Product API
 We will be using the fake store API to obtain sample product data for our store. 
