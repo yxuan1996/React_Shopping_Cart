@@ -6,8 +6,7 @@ Tools / Libraries used:
 - Vite as build tool
 - React Router
 - React Bootstrap as the main UI library
-- JOY UI as UI library
-- Stripe for Payments
+- Auth0 for Authentication
 
 To run the app:
 ```
@@ -25,6 +24,13 @@ npm install react-router-dom localforage match-sorter sort-by
 React Bootstrap
 ```
 npm install react-bootstrap bootstrap
+```
+
+Material UI, Fonts and Icons
+```
+npm install @mui/material @emotion/react @emotion/styled
+npm install @fontsource/roboto
+npm install @mui/icons-material
 ```
 
 Joy UI
@@ -209,4 +215,138 @@ We define the following functions
 We will be using the fake store API to obtain sample product data for our store. 
 
 https://fakestoreapi.com/docs
+
+
+### Authentication
+#### Authentication with Auth0
+https://auth0.com/docs/quickstart/spa/react/interactive
+
+We start by defining our callback URLs in the auth0 dashboard
+
+```
+npm install @auth0/auth0-react
+```
+
+In `app.jsx` or `main.jsx` we import the auth0 library and wrap our RouterProvider with the Auth0 Provider
+```jsx
+import { Auth0Provider } from '@auth0/auth0-react';
+
+ <Auth0Provider
+    domain="dev-jndibmborj1ymgx3.us.auth0.com"
+    clientId="dXAXEEPloxGEVIs5V0lL9kG1CEoOAeEY"
+    // Need to modify this as appropriate
+    authorizationParams={{
+      redirect_uri: "https://5173-yxuan1996-reactshopping-wl3bg6hjqox.ws-us107.gitpod.io/React_Shopping_Cart/"
+    }}
+  > 
+      <RouterProvider router={router} />
+    </Auth0Provider> 
+```
+
+We also create `login.jsx`, `logout.jsx` and `profile.jsx` pages
+
+For some reason I can't get Auth0 to work, switching over to userfront
+
+#### Authentication with UserFront
+```
+npm install @userfront/toolkit --save
+```
+
+In `app.jsx` or `main.jsx` we import userfront and initialize the library. 
+userfront provides build-in UI for auth, so we define our routes to use those UI components
+
+```jsx
+import Userfront, { SignupForm, LoginForm, PasswordResetForm } from "@userfront/toolkit/react";
+
+Userfront.init("{Project Code Here}");
+
+// Inside Router
+{
+  path: "login",
+  element: <LoginForm />,
+},
+{
+  path: "signup",
+  element: <SignupForm />,
+},
+```
+
+- For protected routes, we define a custom function `RequireAuth` that checks if the userfront generated JWT token is present. If not, we redirect to the login page. 
+- We wrap this function around routes we want to protect, such as the dashboard. 
+```jsx
+function RequireAuth({ children }) {
+  let location = useLocation();
+  if (!Userfront.tokens.accessToken) {
+    // Redirect to the /login page
+    return <Navigate to="/React_Shopping_Cart/login" state={{ from: location }} replace />;
+  }
+
+  return children;
+}
+
+// Inside Router
+{
+  path: "dashboard",
+  element:  <RequireAuth>
+    <Dashboard />
+  </RequireAuth>,
+},
+```
+
+In `root.jsx` we update the navbar links for signin, signout, reset_password and dashboard
+
+```jsx
+<Nav.Item>
+<LinkContainer to="/React_Shopping_Cart/login">
+<Nav.Link>
+    Login  
+</Nav.Link>
+</LinkContainer>
+</Nav.Item>
+```
+
+Authentication with other APIs
+
+- For external APIs that require authentication, we can use `fetch` to call an API and pass in the JWT token as the bearer token
+```jsx
+async function getInfo() {
+  const res = await window.fetch("/your-endpoint", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${Userfront.tokens.accessToken}`,
+    },
+  });
+
+  console.log(res);
+}
+
+getInfo();
+```
+
+- In our backend server (node JS), we define a middleware that reads the JWT token and verifies it with the Userfront public key before proceeding with the next step of the API. 
+
+```js
+// Node.js example (Express.js)
+
+const jwt = require("jsonwebtoken");
+
+function authenticateToken(req, res, next) {
+  // Read the JWT access token from the request header
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null) return res.sendStatus(401); // Return 401 if no token
+
+  // Verify the token using the Userfront public key
+  jwt.verify(token, process.env.USERFRONT_PUBLIC_KEY, (err, auth) => {
+    if (err) return res.sendStatus(403); // Return 403 if there is an error verifying
+    req.auth = auth;
+    next();
+  });
+}
+```
+
+After the token is verified, we can use `console.log(req.auth);` to inspect the contents of the token and obtain further information, such as userId, authorization roles etc. 
+
+
 
